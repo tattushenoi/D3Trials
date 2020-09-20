@@ -1,0 +1,38 @@
+body{
+            background:#aae;
+        }
+        .node {
+            cursor: pointer;
+        }
+
+            .node circle {
+                /*fill: #fff;
+                stroke: steelblue;*/
+                stroke-width: 3px;
+            }
+
+            .node text {
+                font: 12px sans-serif;
+                fill: #fff;
+            }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+
+        .tree {
+            margin-bottom: 10px;
+            overflow: auto;
+        }
+
+        .arrow {
+            fill: rgb(175, 15, 15);
+            stroke-width: 1px;
+        }
+
+        .arrowselected {
+            fill: tomato;
+            stroke-width: 2px;
+        }
