@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="d3Star.js"></script>
+</head>
+<body>
+	<script>
+		var svg = d3.select("body").append("svg")
+		    		.attr("width", 500)
+						.attr("height", 500);
+
+		var line = d3.svg.diagonal();
+
+		var lineData = {source:{x:25, y:25},
+						target:{x:400, y:400}};
+
+		var path = svg.append("path")
+			.attr("d", line(lineData))
+			.style("stroke", "black")
+			.style("fill", "none");
+
+        /* var star = new d3Star();
+        star.x(25).y(25).size(l).value(1.0).starColor("#67AED3").borderWidth(0);
+ */
+		svg.append("circle")
+			.attr("cx", 25) //Starting x
+			.attr("cy", 25) //Starting y
+			.attr("r", 10)
+			.style("fill", "red")
+			.transition()
+			.delay(250)
+			.duration(1000)
+			.ease("linear")
+			.tween("pathTween", function(){return pathTween(path)})
+			// .tween("pathTween", pathTween); //Custom tween to set the cx and cy attributes
+
+		function pathTween(path){
+			var length = path.node().getTotalLength(); // Get the length of the path
+			var r = d3.interpolate(0, length); //Set up interpolation from 0 to the path length
+			return function(t){
+				var point = path.node().getPointAtLength(r(t)); // Get the next point along the path
+				d3.select(this) // Select the circle
+					.attr("cx", point.x) // Set the cx
+					.attr("cy", point.y) // Set the cy
+			}
+		}
+	</script>
+</body>
+</html>
