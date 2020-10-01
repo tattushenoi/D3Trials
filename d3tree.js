@@ -80,6 +80,8 @@ var defs;
                     // Declare the links�
                     var link = svg.selectAll("path.link")
                         .data(links, function (d) { return d.target.id; });
+
+                        var animSnD;
                     // Enter the links.
                     link.enter().insert("path", "g")
                         .attr("class", "link")
@@ -88,12 +90,25 @@ var defs;
                         .attr("d", function (d) {
                             var o = { x: source.x0, y: source.y0 };
                             return diagonal({ source: o, target: o });
+                            
                         });
+                        
+
+                        function pathTween(path){
+                            var length = path.node().getTotalLength(); // Get the length of the path
+                            var r = d3.interpolate(0, length); //Set up interpolation from 0 to the path length
+                            return function(t){
+                                var point = path.node().getPointAtLength(r(t)); // Get the next point along the path
+                                d3.select(this) // Select the circle
+                                    .attr("cx", point.x) // Set the cx
+                                    .attr("cy", point.y) // Set the cy
+                            }
+                        }
                     // Transition links to their new position.
                     link.transition()
                         .duration(duration)
                     .attr("d", diagonal);
-
+                        
 
                     // Transition exiting nodes to the parent's new position.
                     link.exit().transition()
@@ -103,12 +118,45 @@ var defs;
                             return diagonal({ source: o, target: o });
                         })
                         .remove();
+                        var animcircle;
 
+                       
                     // Stash the old positions for transition.
                     nodes.forEach(function (d) {
                         d.x0 = d.x;
                         d.y0 = d.y;
+                        console.log(d.x+"=============="+d.y+"+++++++++++"+d.name);
                     });
+
+                    
+
+                    $("#animate").click(function(){
+                        link.each(function(d, i) {
+
+                            
+    
+                            console.log("->"+d.source.name+"=>"+d.target.name);
+                            if(d.target.name==="Application1") {
+                                console.log((d.source.x)+"===>"+(d.source.y));
+                                var datacircle = svg.append("circle")
+                                .attr("cx", d.source.x) //Starting x
+                                .attr("cy", d.source.y) //Starting y
+                                .attr("r", 5)
+                                .style("fill", "red")
+                                .transition()
+                                .delay(250)
+                                .duration(1000)
+                                .ease("linear")
+                                .tween("pathTween", function(){return pathTween(link)}); 
+                                
+                                datacircle.remove();
+    
+                            }
+    
+                            
+                        });
+                    }); 
+
                 }
 				var val=0;
                 // Toggle children on click.
